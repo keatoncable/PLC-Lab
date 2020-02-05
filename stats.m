@@ -16,13 +16,16 @@ child_type = 125; %characters per minute
 code = 5; %4 digit PIN and enter key
 
 %% Stats
-conf = 0.95;
+p = 0.95;
 sample_mean = [];
 sample_std = [];
 sample_median = [];
 sample_var = [];
+conf_int = [];
+prec_int = [];
 
 for i = 1:5
+    N = length(data(:,i));
     mean_time = mean(data(:,i));
     sample_mean = [sample_mean mean_time];
     std_dev = std(data(:,i));
@@ -31,6 +34,11 @@ for i = 1:5
     sample_median = [sample_median median_time];
     variance = var(data(:,i));
     sample_var = [sample_var variance];
-    
-
+    t = tinv(p,N-1);
+    sx_bar = std_dev/sqrt(N);
+    ci = t*sxbar;
+    conf_int = [conf_int ci];
+    pi = t*std_dev;
+    prec_int = [prec_int pi];
+end
 
