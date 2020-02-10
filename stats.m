@@ -28,11 +28,11 @@ sample_var = [];
 conf_int = [];
 prec_int = [];
 num_meas = [];
-d = (10/60)/2;
+d = (10/2);
 
 for i = 2:6
     N = length(num(:,i)); %length of vector
-    norm = num(:,i)./5;
+    norm = num(:,i)./code; %normalizes times to per character
     mean_time = mean(norm); %average time per character
     sample_mean = [sample_mean mean_time]; %storing average time in vector
     std_dev = std(norm); %standard deviation of time per character
@@ -47,8 +47,16 @@ for i = 2:6
     conf_int = [conf_int ;-ci ci]; % storing confidence interval
     preci = t*std_dev; % precision interval
     prec_int = [prec_int; -preci preci]; %storing precision interval
-    num = (ci/d)^2; %number of measurements needed to obtain desired CI
-    num_meas = [num_meas num]; %storing number of measurements needed
+    nummeas = (ci/d)^2; %number of measurements needed to obtain desired CI
+    num_meas = [num_meas nummeas]; %storing number of measurements needed
 end
+
+elderly_walk = elderly_speed*dist; %calculating elderly walk time
+adult_walk = adult_speed*dist; %calculating adult walk time
+child_speed = child_speed*dist; %calculating child walk time
+
+elderly_time = elderly_type.*sample_mean; %calculating time needed for elderly to input 5 digits
+adult_time = adult_type.*sample_mean; %calculating time needed for adult to input 5 digits
+child_time = child_type.*sample_mean; %calculating time needed for child to input 5 digits
 
 
