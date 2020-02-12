@@ -3,9 +3,9 @@ clc
 
 %% Read in data from Excel
 
-initdata = readtable('time.xlsx');
-data = table2cell(initdata(2:end,2:end));
-[num,txt] = xlsread('time.xlsx');
+%initdata = readtable('time.xlsx');  %reads data from spreadsheet
+%data = table2cell(initdata(2:end,2:end));   %sorts data
+[num,txt] = xlsread('time.xlsx');   %reads data from excel
 
 %% Initialize Constants
 
