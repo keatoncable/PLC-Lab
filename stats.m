@@ -9,14 +9,14 @@ clc
 
 %% Initialize Constants
 
-dist = 4; %meters
+dist = 6; %meters
 elderly_speed = 0.8; %m/s
 adult_speed = 1.4; %m/s
 child_speed = 0.9; %m/s
 code = 5; %4 digit PIN and enter key
-elderly_type = 25/60*code; %time to input 5 character in seconds
-adult_type = 250/60*code; %time to input 5 character in seconds
-child_type = 125/60*code; %time to input 5 character in seconds
+elderly_type = 25/60; %time to input 5 character in seconds
+adult_type = 150/60; %time to input 5 character in seconds
+child_type = 80/60; %time to input 5 character in seconds
 
 %% Stats
 
@@ -30,11 +30,11 @@ prec_int = [];
 num_meas = [];
 cistore = [];
 pistore = [];
-d = (1/2);
+d = (0.05/2);
 
 for i = 2:6
     N = length(num(:,i)); %length of vector
-    norm = num(:,i)./code; %normalizes times to per character
+    norm = 1./(num(:,i)./code) %normalizes character per second 
     mean_time = mean(norm); %average time per character
     sample_mean = [sample_mean mean_time]; %storing average time in vector
     std_dev = std(norm); %standard deviation of time per character
@@ -57,17 +57,19 @@ elderly_walk = elderly_speed*dist; %calculating elderly walk time
 adult_walk = adult_speed*dist; %calculating adult walk time
 child_walk = child_speed*dist; %calculating child walk time
 
-elderly_time = mean(elderly_type.*sample_mean); %calculating time needed for elderly to input 5 digits
-adult_time = mean(adult_type.*sample_mean); %calculating time needed for adult to input 5 digits
-child_time = mean(child_type.*sample_mean); %calculating time needed for child to input 5 digits
+elderly_time = mean(code/elderly_type); %calculating time needed for elderly to input 5 digits
+adult_time = mean(code/adult_type); %calculating time needed for adult to input 5 digits
+child_time = mean(code/child_type); %calculating time needed for child to input 5 digits
 
 elderly_sum = elderly_walk+elderly_time;
 adult_sum = adult_walk+adult_time;
 child_sum = child_walk+child_time;
 
+data_type = mean(sample_mean);
+
 %% Build tables
 
-statstable = {'' 'Sample Mean' 'Sample Standard Deviation' 'Sample Median' 'Sample Variance';
+statstable = {'' 'Sample Mean [ch/s]' 'Sample Standard Deviation' 'Sample Median' 'Sample Variance';
         'Test 1' sample_mean(1) sample_std(1) sample_median(1) sample_var(1);
         'Test 2' sample_mean(2) sample_std(2) sample_median(2) sample_var(2);
         'Test 3' sample_mean(3) sample_std(3) sample_median(3) sample_var(3);
@@ -102,11 +104,25 @@ intervals = {'' 'Confidence Interval' ' Precision Interval';
         xlswrite('numneeded.xlsx',numneeded,1)
         
 results = {'' 'Time Needed to Input Code' 'Time Needed to Walk to Keypad' 'Total Alarm Time Needed';
-            'Elderly'   elderly_walk elderly_time elderly_sum;
-            'Adult'     adult_walk adult_time adult_sum;
-            'Child'     child_walk child_time child_sum}
+            'Elderly'   elderly_time elderly_walk elderly_sum;
+            'Adult'     adult_time adult_walk adult_sum;
+            'Child'     child_time child_walk child_sum}
         
         xlswrite('results.xlsx',results,1)
+        
+chpersec = {'' 'Elderly' 'Adult' 'Child' 'Data';
+            'Characters Per Second' elderly_type adult_type child_type data_type }
+        
+        xlswrite('cpscomp.xlsx',chpersec,1)
+        
+ avechar = mean([elderly_type adult_type child_type data_type]);
+ avetime = mean([elderly_time adult_time child_time]);
+ 
+ proptime = {'Average Characters Per Second' avechar;
+            'Average Walk Time' avetime;
+            'Total Average Time' avechar+avetime}
+        
+        xlswrite('proptime.xlsx',proptime,1)
         
             
         
