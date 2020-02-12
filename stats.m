@@ -13,10 +13,10 @@ dist = 4; %meters
 elderly_speed = 0.8; %m/s
 adult_speed = 1.4; %m/s
 child_speed = 0.9; %m/s
-elderly_type = 25; %characters per minute
-adult_type = 250; %characters per minute
-child_type = 125; %characters per minute
 code = 5; %4 digit PIN and enter key
+elderly_type = 25/60*code; %time to input 5 character in seconds
+adult_type = 250/60*code; %time to input 5 character in seconds
+child_type = 125/60*code; %time to input 5 character in seconds
 
 %% Stats
 
@@ -30,7 +30,7 @@ prec_int = [];
 num_meas = [];
 cistore = [];
 pistore = [];
-d = (10/2);
+d = (1/2);
 
 for i = 2:6
     N = length(num(:,i)); %length of vector
